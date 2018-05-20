@@ -10,7 +10,7 @@ public class Node {
 
     //private ArrayList<Edge> connections;
 
-    Node(int index,String code, String name){
+    Node(int index, String code, String name){
         this.name = name;
         this.code = code;
         this.index = index;
