@@ -1,12 +1,12 @@
 public class Edge {
     public Node start;
     public Node end;
-    public double weight;
+    public double cost;
 
-    Edge(Node start, Node end, double weight) {
+    Edge(Node start, Node end, double cost) {
         this.start = start;
         this.end = end;
-        this.weight = weight;
+        this.cost = cost;
     }
 
     public Node getStart() {
@@ -17,7 +17,8 @@ public class Edge {
         return end;
     }
 
-    public double getWeight() {
-        return weight;
+    public double getCost() {
+        return cost;
     }
+
 }

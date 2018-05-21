@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Reader {
@@ -8,16 +6,18 @@ public class Reader {
     private static final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
     private static final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
 
+    private static List<Node> nodeList = new ArrayList<>();
+    private static List<Edge> edgeList = new ArrayList<>();
+    private static HashMap<Integer, Node> nodeHashMap = new HashMap<>();
 
-   private static List<Node> nodeList = new ArrayList<>();
-   private static List<Edge> edgeList = new ArrayList<>();
+    private static int lines = 0;
 
-    public static List readAirPorts(){
+    public static List readAirPorts() {
         read(AIRPORTS);
         return nodeList;
     }
 
-    public static List readFlights(){
+    public static List readFlights() {
         read(FLIGHTS);
         return nodeList;
     }
@@ -31,51 +31,61 @@ public class Reader {
 
             String sCurrentLine;
 
-            int lines = 0;
             while ((sCurrentLine = br.readLine()) != null) {
                 lines++;
             }
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] line = sCurrentLine.split("\\s+");
-                if(FILENAME.equals(AIRPORTS)) {
-                    for (int i = 0; i < line.length; i++) {
-                        nodeList.add(new Node(Integer.parseInt(line[0]), line[1], line[2]));
-                    }
-                }
-                else{
-                    for(int i = 0; i < line.length; i++){
-                        //wtf do i do with this data
-                        int from = Integer.parseInt(line[0]);
-                        int to = Integer.parseInt(line[1]);
-                        double cost = Double.parseDouble(line[2]);
-                        edgeList.add(new Edge(from,to,cost));
-                    }
+                if (FILENAME.equals(AIRPORTS)) {
+
+                    int index = Integer.parseInt(line[1]);
+                    String code = line[2];
+                    String name = line[3];
+
+                    Node node = new Node(index, code, name);
+                    nodeList.add(node);
+                    nodeHashMap.put(index, node);
+
+                } else {
+                    Node from = nodeHashMap.get(line[1]);
+                    Node to = nodeHashMap.get(line[2]);
+                    double cost = Double.parseDouble(line[3]);
+                    edgeList.add(new Edge(from, to, cost));
                 }
             }
-
         } catch (IOException e) {
-
             e.printStackTrace();
-
         } finally {
-
             try {
-
                 if (br != null)
                     br.close();
-
                 if (fr != null)
                     fr.close();
-
             } catch (IOException ex) {
-
                 ex.printStackTrace();
-
             }
-
         }
-
     }
 
+    public static AdjacencyMatrixGraph createGraph() {
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines);
+        for (int i = 0; i < edgeList.size(); i++) {
+            Edge edge = edgeList.get(i);
+            graph.addEdge(edge.getStart(), edge.getEnd(), edge.getCost());
+        }
+        return graph;
+    }
+
+    public static List getNodeList() {
+        return nodeList;
+    }
+
+    public static List getEdgeList() {
+        return edgeList;
+    }
+
+    public static HashMap getNodeHashMap() {
+        return nodeHashMap;
+    }
 }

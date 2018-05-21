@@ -8,22 +8,28 @@ public class Node {
     private int index;
 
 
-    //private ArrayList<Edge> connections;
+    private ArrayList<Edge> connections;
 
-    Node(int index, String code, String name){
-        this.name = name;
-        this.code = code;
+    Node(int index, String code, String name) {
         this.index = index;
+        this.code = code;
+        this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
-    public String getCode() {return code;}
-    public int getIndex(){ return index;}
 
-//    public ArrayList<Edge> getConnections(){
-//        return connections;
-//    }
+    public String getCode() {
+        return code;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public ArrayList<Edge> getConnections(){
+        return connections;
+    }
 
 }
