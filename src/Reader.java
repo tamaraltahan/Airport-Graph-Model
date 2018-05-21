@@ -9,6 +9,7 @@ public class Reader {
     private static List<Node> nodeList = new ArrayList<>();
     private static List<Edge> edgeList = new ArrayList<>();
     private static HashMap<Integer, Node> nodeHashMap = new HashMap<>();
+    private static HashMap<String,Node> codeMap = new HashMap<>();
 
     private static int lines = 0;
 
@@ -46,6 +47,7 @@ public class Reader {
                     Node node = new Node(index, code, name);
                     nodeList.add(node);
                     nodeHashMap.put(index, node);
+                    codeMap.put(code,node);
 
                 } else {
                     Node from = nodeHashMap.get(line[1]);
@@ -69,7 +71,7 @@ public class Reader {
     }
 
     public static AdjacencyMatrixGraph createGraph() {
-        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines);
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines,nodeList,edgeList,nodeHashMap,codeMap);
         for (int i = 0; i < edgeList.size(); i++) {
             Edge edge = edgeList.get(i);
             graph.addEdge(edge.getStart(), edge.getEnd(), edge.getCost());
@@ -88,4 +90,6 @@ public class Reader {
     public static HashMap getNodeHashMap() {
         return nodeHashMap;
     }
+
+    public static HashMap getCodeMap(){ return codeMap; }
 }
