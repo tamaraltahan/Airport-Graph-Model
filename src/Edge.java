@@ -1,7 +1,7 @@
 public class Edge {
-    public Node start;
-    public Node end;
-    public double cost;
+    private Node start;
+    private Node end;
+    private double cost;
 
     Edge(Node start, Node end, double cost) {
         this.start = start;
@@ -12,11 +12,9 @@ public class Edge {
     public Node getStart() {
         return start;
     }
-
     public Node getEnd() {
         return end;
     }
-
     public double getCost() {
         return cost;
     }

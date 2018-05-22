@@ -11,10 +11,10 @@ public class AdjacencyMatrixGraph {
     private Edge[][] matrix;
 
 
-    List<Node> nodeList;
-    List<Edge> edgeList;
-    HashMap<Integer, Node> nodeHashMap;
-    HashMap<String,Node> codeHashMap;
+   private List<Node> nodeList;
+   private List<Edge> edgeList;
+   private HashMap<Integer, Node> nodeHashMap;
+   private HashMap<String,Node> codeHashMap;
 
 
     AdjacencyMatrixGraph(int v, List nodes, List edges, HashMap nodeMap, HashMap codeMap) {
@@ -63,8 +63,6 @@ public class AdjacencyMatrixGraph {
         }
     }
 
-    //todo: literally all of this shit
-
     public void displayAirportInfo(String code){
         if(nodeHashMap.containsKey(code)){
             Node port = nodeHashMap.get(code);
@@ -76,14 +74,15 @@ public class AdjacencyMatrixGraph {
     }
 
 
-    ////////ISOLATION CHAMBER//////////////
-    int minDistance(int dist[], Boolean sptSet[]) {
+    //todo: literally all of this shit
+
+    ////////Quarantine CHAMBER//////////////
+    private int minDistance(int dist[], Boolean sptSet[]) {
         // Initialize min value
         int min = Integer.MAX_VALUE, min_index=-1;
 
         for (int v = 0; v < vertices; v++)
-            if (sptSet[v] == false && dist[v] <= min)
-            {
+            if (sptSet[v] == false && dist[v] <= min) {
                 min = dist[v];
                 min_index = v;
             }
@@ -92,60 +91,31 @@ public class AdjacencyMatrixGraph {
     }
 
     // A utility function to print the constructed distance array
-    void printSolution(int dist[], int n) {
+    private void printSolution(int dist[], int n) {
         System.out.println("Vertex   Distance from Source");
         for (int i = 0; i < vertices; i++)
             System.out.println(i +" tt "+ dist[i]);
     }
 
-    // Funtion that implements Dijkstra's single source shortest path
-    // algorithm for a graph represented using adjacency matrix
-    // representation
     void dijkstra(Node src) {
-        int dist[] = new int[vertices]; // The output array. dist[i] will hold
-        // the shortest distance from src to i
-
-        // sptSet[i] will true if vertex i is included in shortest
-        // path tree or shortest distance from src to i is finalized
+        int dist[] = new int[vertices];
         Boolean sptSet[] = new Boolean[vertices];
-
-        // Initialize all distances as INFINITE and stpSet[] as false
         for (int i = 0; i < vertices; i++) {
             dist[i] = Integer.MAX_VALUE;
             sptSet[i] = false;
         }
-
-        // Distance of source vertex from itself is always 0
         dist[src.getIndex()] = 0;
-
-        // Find shortest path for all vertices
         for (int count = 0; count < vertices-1; count++){
-
-            // Pick the minimum distance vertex from the set of vertices
-            // not yet processed. u is always equal to src in first
-            // iteration.
             int u = minDistance(dist, sptSet);
-
-            // Mark the picked vertex as processed
             sptSet[u] = true;
-
-            // Update dist value of the adjacent vertices of the
-            // picked vertex.
             for (int v = 0; v < vertices; v++)
-
-                // Update dist[v] only if is not in sptSet, there is an
-                // edge from u to v, and total weight of path from src to
-                // v through u is smaller than current value of dist[v]
                 if (!sptSet[v] && matrix[u][v]!= null &&
                         dist[u] != Integer.MAX_VALUE &&
-                        dist[u]+ matrix[u][v].getStart().getIndex() < dist[v]) //def gonna be problems here
+                        dist[u] + matrix[u][v].getStart().getIndex() < dist[v]) //def gonna be problems here
                     dist[v] = dist[u] + matrix[u][v].getStart().getIndex();     //and here too
                                                                                 //added .getstart.getindex
         }
-
-        // print the constructed distance array
         printSolution(dist, vertices);
-
     }
 
     public Edge cheapestRoute(String a, String b){
@@ -177,8 +147,6 @@ public class AdjacencyMatrixGraph {
     public void addAirport(int index, String code, String name){
         Node node = new Node(index,code,name);
         nodeList.add(node);
-
-
     }
 
     public void displayGraph(){
