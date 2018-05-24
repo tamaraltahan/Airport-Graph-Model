@@ -1,9 +1,6 @@
-import org.w3c.dom.NodeList;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class AdjacencyMatrixGraph {
 
@@ -11,10 +8,10 @@ public class AdjacencyMatrixGraph {
     private Edge[][] matrix;
 
 
-   private List<Node> nodeList;
-   private List<Edge> edgeList;
-   private HashMap<Integer, Node> nodeHashMap;
-   private HashMap<String,Node> codeHashMap;
+    private List<Node> nodeList;
+    private List<Edge> edgeList;
+    private HashMap<Integer, Node> nodeHashMap;
+    private HashMap<String, Node> codeHashMap;
 
 
     AdjacencyMatrixGraph(int v, List nodes, List edges, HashMap nodeMap, HashMap codeMap) {
@@ -31,8 +28,20 @@ public class AdjacencyMatrixGraph {
         matrix[i.getIndex()][j.getIndex()] = new Edge(i, j, weight);
     }
 
-    public void removeEdge(int i, int j) {
-        matrix[i][j] = null;
+    /**
+     * remove flight from A to B
+     *
+     * @param i start
+     * @param j finish
+     */
+    public void removeEdge(String i, String j) {
+        try {
+            Node a = codeHashMap.get(i);
+            Node b = codeHashMap.get(j);
+            matrix[a.getIndex()][b.getIndex()] = null;
+        } catch (Exception e) {
+            System.out.println("Invalid input");
+        }
     }
 
     public boolean hasEdge(int i, int j) {
@@ -55,6 +64,11 @@ public class AdjacencyMatrixGraph {
     }
 
 
+    /**
+     * Print all airport info (index, code, & name)
+     *
+     * @param nodeList list of vertices
+     */
     public void displayAllAirportInfo(List<Node> nodeList) {
         System.out.println("Airport Index:\tAirport Code:\tAirport Name:");
         for (int i = 0; i < nodeList.size(); i++) {
@@ -63,12 +77,16 @@ public class AdjacencyMatrixGraph {
         }
     }
 
-    public void displayAirportInfo(String code){
-        if(nodeHashMap.containsKey(code)){
+    /**
+     * Displays info of an airport from code
+     *
+     * @param code 3 letter code
+     */
+    public void displayAirportInfo(String code) {
+        if (nodeHashMap.containsKey(code)) {
             Node port = nodeHashMap.get(code);
-            System.out.println("Airport Index: " + port.getIndex() + "Airport Code: " + port.getCode() + "Airport name: " +  port.getName());
-        }
-        else{
+            System.out.println("Airport Index: " + port.getIndex() + "Airport Code: " + port.getCode() + "Airport name: " + port.getName());
+        } else {
             System.out.println("Airport not found.");
         }
     }
@@ -79,7 +97,7 @@ public class AdjacencyMatrixGraph {
     ////////Quarantine CHAMBER//////////////
     private int minDistance(int dist[], Boolean sptSet[]) {
         // Initialize min value
-        int min = Integer.MAX_VALUE, min_index=-1;
+        int min = Integer.MAX_VALUE, min_index = -1;
 
         for (int v = 0; v < vertices; v++)
             if (sptSet[v] == false && dist[v] <= min) {
@@ -91,13 +109,17 @@ public class AdjacencyMatrixGraph {
     }
 
     // A utility function to print the constructed distance array
-    private void printSolution(int dist[], int n) {
+    private void printSolution(int dist[]) {
         System.out.println("Vertex   Distance from Source");
         for (int i = 0; i < vertices; i++)
-            System.out.println(i +" tt "+ dist[i]);
+            System.out.println(i + " tt " + dist[i]);
     }
 
-    void dijkstra(Node src) {
+    private void printShortestPath(int[] dist, Node a, Node b) {
+        System.out.println("The cheapest flight from " + a.getCode() + " to " + b.getCode() + " is: " + dist[b.getIndex()]);
+    }
+
+    private void dijkstra(Node src, Node dest) {
         int dist[] = new int[vertices];
         Boolean sptSet[] = new Boolean[vertices];
         for (int i = 0; i < vertices; i++) {
@@ -105,51 +127,72 @@ public class AdjacencyMatrixGraph {
             sptSet[i] = false;
         }
         dist[src.getIndex()] = 0;
-        for (int count = 0; count < vertices-1; count++){
+        for (int count = 0; count < vertices - 1; count++) {
             int u = minDistance(dist, sptSet);
             sptSet[u] = true;
             for (int v = 0; v < vertices; v++)
-                if (!sptSet[v] && matrix[u][v]!= null &&
+                if (!sptSet[v] && matrix[u][v] != null &&
                         dist[u] != Integer.MAX_VALUE &&
                         dist[u] + matrix[u][v].getStart().getIndex() < dist[v]) //def gonna be problems here
                     dist[v] = dist[u] + matrix[u][v].getStart().getIndex();     //and here too
-                                                                                //added .getstart.getindex
+            //added .getstart.getindex
         }
-        printSolution(dist, vertices);
+        printShortestPath(dist, src, dest);
+        printSolution(dist);
     }
 
-    public Edge cheapestRoute(String a, String b){
-        if(!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)){
+    /**
+     * Find the cheapest route from airport a to airport b utilizing Dijkstra's algorithm
+     *
+     * @param a Code for airport A
+     * @param b Code for airport B
+     */
+    public void cheapestRoute(String a, String b) {
+        if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
             System.out.println("Invalid input");
-            return null;
+            return;
+        } else {
+            dijkstra(codeHashMap.get(a), codeHashMap.get(b));
         }
-        else{
+    }
 
+    /**
+     * Find the cheapest rout from A->B & from B->A (Double Dijkstra)
+     *
+     * @param a Code for airport A
+     * @param b Code for airport B
+     */
+    public void cheapestRoundTrip(String a, String b) {
+        if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
+            System.out.println("Invalid input");
+            return;
+        } else {
+            Node n1 = codeHashMap.get(a);
+            Node n2 = codeHashMap.get(b);
+
+            dijkstra(n1, n2);
+            dijkstra(n2, n1);
         }
-    }
 
-    public Edge cheapestRoundTrip(Node i, Node j){
 
     }
 
-    public Edge fewestStops(Node i, Node j){ //DFS I think?
+    public void allFlightsTo(Node start, Node end) {
 
     }
 
-    public void allFlightsTo(Node start, Node end){
+    public void visitAll(Node start) {
 
     }
 
-    public void visitAll(Node start){
-
-    }
-
-    public void addAirport(int index, String code, String name){
-        Node node = new Node(index,code,name);
+    public void addAirport(String code, String name) {
+        Node node = new Node(matrix.length + 1, code, name);
         nodeList.add(node);
+        Edge temp[][] = new Edge[matrix.length + 1][matrix.length + 1];
+        System.arraycopy(temp, 0, matrix, 0, temp.length);
     }
 
-    public void displayGraph(){
+    public void displayGraph() {
 
     }
 

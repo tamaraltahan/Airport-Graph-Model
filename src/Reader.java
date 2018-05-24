@@ -3,27 +3,30 @@ import java.util.*;
 
 public class Reader {
 
-    private static final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
-    private static final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
+    //private  final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
+    //private  final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
 
-    private static List<Node> nodeList = new ArrayList<>();
-    private static List<Edge> edgeList = new ArrayList<>();
-    private static HashMap<Integer, Node> nodeHashMap = new HashMap<>();
-    private static HashMap<String,Node> codeMap = new HashMap<>();
+    private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
+    private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
 
-    private static int lines = 0;
+    private  List<Node> nodeList = new ArrayList<>();
+    private  List<Edge> edgeList = new ArrayList<>();
+    private  HashMap<Integer, Node> nodeHashMap = new HashMap<>();
+    private  HashMap<String,Node> codeMap = new HashMap<>();
 
-    public static List readAirPorts() {
+    private  int lines = 0;
+
+    public  List readAirPorts() {
         read(AIRPORTS);
         return nodeList;
     }
 
-    public static List readFlights() {
+    public  List readFlights() {
         read(FLIGHTS);
-        return nodeList;
+        return edgeList;
     }
 
-    private static void read(String FILENAME) {
+    private  void read(String FILENAME) {
         BufferedReader br = null;
         FileReader fr = null;
         try {
@@ -70,7 +73,7 @@ public class Reader {
         }
     }
 
-    public static AdjacencyMatrixGraph createGraph() {
+    public  AdjacencyMatrixGraph createGraph() {
         AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines,nodeList,edgeList,nodeHashMap,codeMap);
         for (int i = 0; i < edgeList.size(); i++) {
             Edge edge = edgeList.get(i);
@@ -79,17 +82,16 @@ public class Reader {
         return graph;
     }
 
-    public static List getNodeList() {
+    public  List getNodeList() {
         return nodeList;
     }
-
-    public static List getEdgeList() {
+    public  List getEdgeList() {
         return edgeList;
     }
-
-    public static HashMap getNodeHashMap() {
+    public  HashMap getNodeHashMap() {
         return nodeHashMap;
     }
+    public  HashMap getCodeMap(){ return codeMap; }
 
-    public static HashMap getCodeMap(){ return codeMap; }
+
 }
