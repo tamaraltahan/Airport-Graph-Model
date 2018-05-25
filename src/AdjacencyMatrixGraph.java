@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class AdjacencyMatrixGraph {
 
@@ -103,56 +101,35 @@ public class AdjacencyMatrixGraph {
         }
     }
 
-    ////////Quarantine CHAMBER//////////////
-    private int minDistance(int dist[], Boolean sptSet[]) {
-        // Initialize min value
-        int min = Integer.MAX_VALUE, minIndex = -1;
+    //---------------------------------------Dijkstra's Quarantine Chamber-------------------------------------------
+    private double dijkstra(Node start, Node end){
+        double[] best = new double[matrix.length];
+        boolean[] visited = new boolean[matrix.length];
+        double max = Double.MAX_VALUE; // Infinity equivalent.
+        for (int i = 0; i < matrix.length; i++) {
+            best[i] = max;
+            visited[i] = false;
+        }
 
-        for (int v = 0; v < vertices; v++)
-            if (sptSet[v] == false && dist[v] <= min) {
-                min = dist[v];
-                minIndex = v;
+        best[start.getIndex()] = start.getIndex(); // Changed the 0 to variable start.
+
+        for(int i = 0; i < matrix.length; i++) {
+            Double min = max;
+            int currentNode = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                if (!visited[j] && best[j] < min) {
+                    currentNode = j;
+                    min = best[j];
+                }
             }
-
-        return minIndex;
-    }
-
-    // A utility function to print the constructed distance array
-    private void printSolution(int dist[], Node from, Node to) {
-        System.out.println("The cost of traveling from " + from.getName() + " to " + to.getName() + " is: " + dist[to.getIndex()]);
-        System.out.println("Route: ");
-        for (int i = 0; i < vertices; i++ ) {
-
+            visited[currentNode] = true;
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[currentNode][j].getCost() < max && best[currentNode] + matrix[currentNode][j].getCost() < best[j]) {
+                    best[j] = best[currentNode] + matrix[currentNode][j].getCost();
+                }
+            }
         }
-
-//        for (int i = 0; i < vertices; i++)
-//            System.out.println(i + " to " + dist[i]);
-    }
-
-    private void printShortestPath(int[] dist, Node a, Node b) {
-        System.out.println("The cheapest flight from " + a.getCode() + " to " + b.getCode() + " is: " + dist[b.getIndex()]);
-    }
-
-    private void dijkstra(Node src, Node dest) {
-        int dist[] = new int[vertices];
-        Boolean sptSet[] = new Boolean[vertices];
-        for (int i = 0; i < vertices; i++) {
-            dist[i] = Integer.MAX_VALUE;
-            sptSet[i] = false;
-        }
-        dist[src.getIndex()] = 0;
-        for (int count = 0; count < vertices - 1; count++) {
-            int u = minDistance(dist, sptSet);
-            sptSet[u] = true;
-            for (int v = 0; v < vertices; v++)
-                if (!sptSet[v] && matrix[u][v] != null &&
-                        dist[u] != Integer.MAX_VALUE &&
-                        dist[u] + matrix[u][v].getStart().getIndex() < dist[v]) //def gonna be problems here
-                    dist[v] = dist[u] + matrix[u][v].getStart().getIndex();     //and here too
-            //added .getstart.getindex
-        }
-        printShortestPath(dist, src, dest);
-        printSolution(dist, src, dest);
+        return best[end.getIndex()-1];
     }
     //-----------------------------------------------------------------------------------------------------
 
@@ -167,7 +144,7 @@ public class AdjacencyMatrixGraph {
             System.out.println("Airport not found");
             return;
         } else {
-            dijkstra(codeHashMap.get(a), codeHashMap.get(b));
+            dijkstra(codeHashMap.get(a),codeHashMap.get(b));
         }
     }
 
@@ -178,6 +155,7 @@ public class AdjacencyMatrixGraph {
      * @param b Code for airport B
      */
     public void cheapestRoundTrip(String a, String b) {
+        System.out.println(a + " " + b);
         if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
             System.out.println("Invalid input");
             return;

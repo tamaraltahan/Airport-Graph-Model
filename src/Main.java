@@ -15,7 +15,7 @@ public class Main {
     static void menu() {
         System.out.println(
                 "1. Display airport information\n" +
-                        "2. Find a cheapest flight from one airport to another airport\n" +
+                        "2. Find the cheapest flight from one airport to another airport\n" +
                         "3. Add a flight from one airport to another airport\n" +
                         "4. Delete a flight from one airport to another airport\n" +
                         "5. Find a cheapest roundtrip from one airport to another airport"
@@ -33,7 +33,7 @@ public class Main {
                 choice = in.next().charAt(0);
                 switchMenu(choice);
             } catch (Exception e) {
-                System.out.println("Invalid Input");
+                System.out.println("Menu - Invalid Input");
             }
         }
         in.close();
