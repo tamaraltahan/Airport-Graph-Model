@@ -1,7 +1,7 @@
 public class Edge {
-    private Node start;
-    private Node end;
-    private double cost;
+    private final Node start;
+    private final Node end;
+    private final double cost;
 
     Edge(Node start, Node end, double cost) {
         this.start = start;

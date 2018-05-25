@@ -1,14 +1,12 @@
-import java.util.ArrayList;
 
 
 public class Node {
 
-    private String name;
-    private String code;
-    private int index;
+    private final String name;
+    private final String code;
+    private final int index;
 
 
-    private ArrayList<Edge> connections;
 
     Node(int index, String code, String name) {
         this.index = index;
@@ -28,8 +26,5 @@ public class Node {
         return index;
     }
 
-    public ArrayList<Edge> getConnections(){
-        return connections;
-    }
 
 }

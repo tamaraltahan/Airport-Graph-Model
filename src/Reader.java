@@ -3,30 +3,35 @@ import java.util.*;
 
 public class Reader {
 
-    //private  final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
-    //private  final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
+    private final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
+    private final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
 
-    private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
-    private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
+    //private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
+    //private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
 
-    private  List<Node> nodeList = new ArrayList<>();
-    private  List<Edge> edgeList = new ArrayList<>();
-    private  HashMap<Integer, Node> nodeHashMap = new HashMap<>();
-    private  HashMap<String,Node> codeMap = new HashMap<>();
+    private List<Node> nodeList = new ArrayList<>();
+    private List<Edge> edgeList = new ArrayList<>();
+    private HashMap<Integer, Node> indexHashMap = new HashMap<>();
+    private HashMap<String, Node> codeMap = new HashMap<>();
 
-    private  int lines = 0;
+    private int lines;
 
-    public  List readAirPorts() {
+    Reader(){
+        readAirPorts();
+        readFlights();
+    }
+
+    public List readAirPorts() {
         read(AIRPORTS);
         return nodeList;
     }
 
-    public  List readFlights() {
+    public List readFlights() {
         read(FLIGHTS);
         return edgeList;
     }
 
-    private  void read(String FILENAME) {
+    private void read(String FILENAME) {
         BufferedReader br = null;
         FileReader fr = null;
         try {
@@ -36,29 +41,36 @@ public class Reader {
             String sCurrentLine;
 
             while ((sCurrentLine = br.readLine()) != null) {
-                lines++;
-            }
-
-            while ((sCurrentLine = br.readLine()) != null) {
-                String[] line = sCurrentLine.split("\\s+");
+                //if reading airport file
+                //airports act as vertices in the graph
+                //put them into a list
                 if (FILENAME.equals(AIRPORTS)) {
-
+                    String[] line = sCurrentLine.split("\\s+");
                     int index = Integer.parseInt(line[1]);
                     String code = line[2];
-                    String name = line[3];
+
+                    String name = "";
+                    if(line.length > 3)
+                    for(int i = 3; i < line.length; i++){
+                        name += line[i] + " ";
+                    }
+                    else
+                        name = line[3];
 
                     Node node = new Node(index, code, name);
                     nodeList.add(node);
-                    nodeHashMap.put(index, node);
-                    codeMap.put(code,node);
+                    indexHashMap.put(index, node);
+                    codeMap.put(code, node);
 
                 } else {
-                    Node from = nodeHashMap.get(line[1]);
-                    Node to = nodeHashMap.get(line[2]);
+                    String[] line = sCurrentLine.split("\\s+");
+                    Node from = indexHashMap.get(Integer.parseInt(line[1]));
+                    Node to = indexHashMap.get(Integer.parseInt(line[2]));
                     double cost = Double.parseDouble(line[3]);
                     edgeList.add(new Edge(from, to, cost));
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -71,27 +83,30 @@ public class Reader {
                 ex.printStackTrace();
             }
         }
+        System.out.println();
     }
 
-    public  AdjacencyMatrixGraph createGraph() {
-        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines,nodeList,edgeList,nodeHashMap,codeMap);
-        for (int i = 0; i < edgeList.size(); i++) {
-            Edge edge = edgeList.get(i);
-            graph.addEdge(edge.getStart(), edge.getEnd(), edge.getCost());
-        }
+    public AdjacencyMatrixGraph createGraph() {
+        lines = nodeList.size();
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines, nodeList, edgeList, indexHashMap, codeMap);
         return graph;
     }
 
-    public  List getNodeList() {
+    public List getNodeList() {
         return nodeList;
     }
-    public  List getEdgeList() {
+
+    public List getEdgeList() {
         return edgeList;
     }
-    public  HashMap getNodeHashMap() {
-        return nodeHashMap;
+
+    public HashMap getIndexHashMap() {
+        return indexHashMap;
     }
-    public  HashMap getCodeMap(){ return codeMap; }
+
+    public HashMap getCodeMap() {
+        return codeMap;
+    }
 
 
 }
