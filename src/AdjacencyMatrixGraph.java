@@ -114,7 +114,7 @@ public class AdjacencyMatrixGraph {
                     PQ.remove(node);
 
                 distance[node.getIndex()] = distanceThroughU;
-                
+
             }
         }
 

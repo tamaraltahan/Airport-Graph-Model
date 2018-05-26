@@ -33,7 +33,7 @@ public class Main {
                 choice = in.next().charAt(0);
                 switchMenu(choice);
             } catch (Exception e) {
-                System.out.println("Menu - Invalid Input");
+                System.out.println("Menu - Invalid Input " + e);
             }
         }
         in.close();
@@ -62,8 +62,8 @@ public class Main {
                 break;
             case '4':
                 System.out.println("Enter airport codes to remove: ");
-                a = in.next();
-                b = in.next();
+                a = in.next().toUpperCase();
+                b = in.next().toUpperCase();
                 graph.removeEdge(a, b);
                 break;
             case '5':
