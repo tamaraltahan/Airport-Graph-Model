@@ -40,8 +40,7 @@ public class AdjacencyMatrixGraph {
 
     private void addEdge(Node i, Node j, double weight) {
         matrix[i.getIndex()][j.getIndex()] = weight;
-        i.addConnection(j);
-        i.addAdjacency(new Edge(i,j,weight));
+        i.addAdjacency(j, weight);
     }
 
     /**
@@ -93,90 +92,97 @@ public class AdjacencyMatrixGraph {
     }
 
     //---------------------------------------Dijkstra's Quarantine Chamber-------------------------------------------
-    public void dijkstra(Node start) {
+    public double[] dijkstra(Node start) {
+
         double[] distance = new double[matrix.length];
         Arrays.fill(distance, Double.MAX_VALUE);
         distance[start.getIndex()] = 0;
 
-        PriorityQueue<Entry<Double,Node>> PQ = new PriorityQueue<>();
+        PriorityQueue<Entry<Double, Node>> PQ = new PriorityQueue<>();
 
-        for(int i = 0; i < nodeList.size(); i++){
-            PQ.offer(new Entry(distance[i],nodeList.get(i)));
+        for (int i = 0; i < nodeList.size(); i++) {
+            PQ.offer(new Entry(distance[i], nodeList.get(i)));
         }
-        while(!PQ.isEmpty()){
-            Entry<Double,Node> U = PQ.poll();
-            for(Edge edge : U.getValue().getAdjacencies()){
-                Node node = edge.getEnd();
-                double weight = edge.getCost();
-                double distanceThroughU = U.getKey() + weight;
 
-                if (distanceThroughU < distance[node.getIndex()])
+        while (!PQ.isEmpty()) {
+            Entry<Double, Node> U = PQ.poll();
+            List list = U.getValue().getAdjacencies();
+
+            for (int i = 0; i < list.size(); i++) {
+                Entry<Double,Node> entry = (Entry<Double, Node>) list.get(i);
+                Node node = entry.getValue();
+                double weight = entry.getKey();
+                double dist = U.getKey() + weight;
+
+                if (dist < distance[node.getIndex()])
                     PQ.remove(node);
 
-                distance[node.getIndex()] = distanceThroughU;
-
+                distance[node.getIndex()] = dist;
             }
         }
-
+        return distance;
     }
 
 
 //-----------------------------------------------------------------------------------------------------
 
-/**
- * Find the cheapest route from airport a to airport b utilizing Dijkstra's algorithm
- *
- * @param a Code for airport A
- * @param b Code for airport B
- */
-        public void cheapestRoute (String a, String b){
-            if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
-                System.out.println("Airport not found");
-                return;
-            } else {
-
-            }
-        }
-
-/**
- * Find the cheapest rout from A->B & from B->A (Double Dijkstra)
- *
- * @param a Code for airport A
- * @param b Code for airport B
- */
-        public void cheapestRoundTrip (String a, String b){
-            System.out.println(a + " " + b);
-            if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
-                System.out.println("Invalid input");
-                return;
-            } else {
-                Node n1 = codeHashMap.get(a);
-                Node n2 = codeHashMap.get(b);
-
-                dijkstra(n1, n2);
-                dijkstra(n2, n1);
+    /**
+     * Find the cheapest route from airport a to airport b utilizing Dijkstra's algorithm
+     *
+     * @param a Code for airport A
+     * @param b Code for airport B
+     */
+    public void cheapestRoute(String a, String b) {
+        if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
+            System.out.println("Airport not found");
+            return;
+        } else {
+            double[] distances = dijkstra(codeHashMap.get(a));
+            for(double D : distances){
+                System.out.println(D);
             }
 
+        }
+    }
+
+    /**
+     * Find the cheapest rout from A->B & from B->A (Double Dijkstra)
+     *
+     * @param a Code for airport A
+     * @param b Code for airport B
+     */
+    public void cheapestRoundTrip(String a, String b) {
+        System.out.println(a + " " + b);
+        if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
+            System.out.println("Invalid input");
+            return;
+        } else {
+            Node n1 = codeHashMap.get(a);
+            Node n2 = codeHashMap.get(b);
+
 
         }
 
-        public void allFlightsTo (Node start, Node end){
-
-        }
-
-        public void visitAll (Node start){
-
-        }
-
-        public void addAirport (String code, String name){
-            Node node = new Node(matrix.length + 1, code, name);
-            nodeList.add(node);
-            Edge temp[][] = new Edge[matrix.length + 1][matrix.length + 1];
-            System.arraycopy(temp, 0, matrix, 0, temp.length);
-        }
-
-        public void displayGraph () {
-            System.out.println("Soon :^)");
-        }
 
     }
+
+    public void allFlightsTo(Node start, Node end) {
+
+    }
+
+    public void visitAll(Node start) {
+
+    }
+
+    public void addAirport(String code, String name) {
+        Node node = new Node(matrix.length + 1, code, name);
+        nodeList.add(node);
+        Edge temp[][] = new Edge[matrix.length + 1][matrix.length + 1];
+        System.arraycopy(temp, 0, matrix, 0, temp.length);
+    }
+
+    public void displayGraph() {
+        System.out.println("Soon :^)");
+    }
+
+}

@@ -3,11 +3,11 @@ import java.util.*;
 
 public class Reader {
 
-    private final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
-    private final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
+//    private final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
+//    private final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
 
-    //private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
-    //private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
+    private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
+    private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
 
     private List<Node> nodeList = new ArrayList<>();
     private List<Edge> edgeList = new ArrayList<>();

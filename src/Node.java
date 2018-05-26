@@ -2,26 +2,30 @@ import java.util.*;
 
 public class Node {
 
-    private List<Node> connections = new ArrayList<>();
-    public void addConnection(Node n){
-        connections.add(n);
-    }
-    public List getConnections(){
-        return connections;
-    }
-    public void removeConnection(Node n){
-        connections.remove(n);
+    Node prev;
+    public void setPrev(Node prev) {
+        this.prev = prev;
     }
 
-    private List<Edge> adjacencies = new ArrayList<>();
-    public void addAdjacency(Edge edge){
-        adjacencies.add(edge);
+    private List<Entry<Double,Node>> paths = new ArrayList<>();
+
+    public void addAdjacency(Node node, Double weight){
+        paths.add(new Entry<>(weight, node));
     }
-    public List<Edge> getAdjacencies() {
-        return adjacencies;
+    public List<Entry<Double,Node>> getAdjacencies() {
+        return paths;
     }
-    public void removeAdjacency(Edge edge){
-        adjacencies.remove(edge);
+
+    public void removeAdjacency(Node node){
+        for(int i = 0 ; i < paths.size(); i++){
+            if(paths.get(i).getValue() == node){
+                paths.remove(i);
+                break;
+            }
+        }
+    }
+    public void removeAdjacency(Entry<Double,Node> entry){
+        paths.remove(entry);
     }
 
     private final String name;
