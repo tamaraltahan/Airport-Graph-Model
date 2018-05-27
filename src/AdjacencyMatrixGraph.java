@@ -2,22 +2,18 @@ import java.util.*;
 
 public class AdjacencyMatrixGraph {
 
-    private int vertices;
     private double[][] matrix;
-
     private List<Node> nodeList;
-    private HashMap<Integer, Node> nodeHashMap;
     private HashMap<String, Node> codeHashMap;
 
 
-    AdjacencyMatrixGraph(int v, List nodes, List<Edge> edges, HashMap nodeMap, HashMap codeMap) {
-        vertices = v;
+    AdjacencyMatrixGraph(List<Node> nodes, List<Edge> edges, HashMap codeMap) { //takes in a list of all airports (nodes/vertices), a list of all edges, and a hashmap of <Code/Vertex>
         nodeList = nodes;
-        nodeHashMap = nodeMap;
         codeHashMap = codeMap;
-        matrix = new double[v][v];
-        for (Edge edge : edges) {
-            addEdge(edge.getStart(), edge.getEnd(), edge.getCost());
+        matrix = new double[nodes.size()][nodes.size()];
+        for (int i = 0; i < edges.size(); i++) {
+            Edge edge = edges.get(i);
+            addEdge(nodes.get(i),edge.getEnd(), edge.getCost());
         }
     }
 
@@ -40,7 +36,9 @@ public class AdjacencyMatrixGraph {
 
     private void addEdge(Node i, Node j, double weight) {
         matrix[i.getIndex()][j.getIndex()] = weight;
-        i.addAdjacency(j, weight);
+        Edge edge = new Edge(j,weight);
+        i.addAdjacency(edge);
+        j.setPrevious(i);
     }
 
     /**
@@ -49,7 +47,7 @@ public class AdjacencyMatrixGraph {
      * @param i start
      * @param j finish
      */
-    public void removeEdge(String i, String j) {
+    public void removeEdge(String i, String j) { //remember to adjust because i fucked with edges and nodes so much
         if (codeHashMap.containsKey(i) && codeHashMap.containsKey(j)) {
             Node a = codeHashMap.get(i);
             Node b = codeHashMap.get(j);
@@ -57,10 +55,6 @@ public class AdjacencyMatrixGraph {
         } else {
             System.out.println("Invalid code entered");
         }
-    }
-
-    public boolean hasEdge(int i, int j) {
-        return matrix[i][j] > 0;
     }
 
 
@@ -98,18 +92,18 @@ public class AdjacencyMatrixGraph {
         Arrays.fill(distance, Double.MAX_VALUE);
         distance[start.getIndex()] = 0;
 
-        PriorityQueue<Entry<Double, Node>> PQ = new PriorityQueue<>();
+        PriorityQueue<Entry> PQ = new PriorityQueue<>();
 
         for (int i = 0; i < nodeList.size(); i++) {
             PQ.offer(new Entry(distance[i], nodeList.get(i)));
         }
 
         while (!PQ.isEmpty()) {
-            Entry<Double, Node> U = PQ.poll();
-            List list = U.getValue().getAdjacencies();
+            Entry U = PQ.poll();
+            List<Entry> list = U.getValue().getAdjacencies();
 
             for (int i = 0; i < list.size(); i++) {
-                Entry<Double,Node> entry = (Entry<Double, Node>) list.get(i);
+                Entry entry = list.get(i);
                 Node node = entry.getValue();
                 double weight = entry.getKey();
                 double dist = U.getKey() + weight;
@@ -122,6 +116,40 @@ public class AdjacencyMatrixGraph {
         }
         return distance;
     }
+
+
+    public void dijkstra2(Node start){
+        start.setMinDistance(0);
+
+        PriorityQueue<Node> PQ = new PriorityQueue<>();
+
+        PQ.add(start);
+
+        while (!PQ.isEmpty()){
+            Node u = PQ.poll();
+
+            for(Edge neighbour : u.getAdjacencies()){
+                Double newDist = u.getMinDistance() + neighbour.getCost();
+
+                if(neighbour.getEnd().getMinDistance() > newDist){
+                    PQ.remove(neighbour.getEnd());
+                    neighbour.getEnd().setMinDistance(newDist);
+
+
+                    neighbour.getEnd().setPath(new LinkedList<>(u.getPath()));
+                    neighbour.getEnd().addPath(u);
+                }
+
+
+            }
+
+        }
+
+
+
+    }
+
+
 
 
 //-----------------------------------------------------------------------------------------------------

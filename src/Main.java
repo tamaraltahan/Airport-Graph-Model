@@ -45,7 +45,7 @@ public class Main {
             case '1':
                 System.out.println("Enter the airport code: ");
                 a = in.next();
-                graph.displayAirportInfo(a.toUpperCase()); //<--- not triggering
+                graph.displayAirportInfo(a.toUpperCase());
                 break;
             case '2':
                 System.out.println("Enter the airport codes: ");

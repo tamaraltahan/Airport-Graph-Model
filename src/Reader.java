@@ -3,18 +3,17 @@ import java.util.*;
 
 public class Reader {
 
-//    private final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
-//    private final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
+    private final String AIRPORTS = "C:\\Users\\Tamar\\Downloads\\P4Airports.txt";
+    private final String FLIGHTS = "C:\\Users\\Tamar\\Downloads\\P4Flights.txt";
 
-    private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
-    private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
+//    private  final String AIRPORTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Airports.txt";
+//    private  final String FLIGHTS = "C:\\Users\\tamar\\Desktop\\stuff\\CS stuff\\P4Flights.txt";
 
     private List<Node> nodeList = new ArrayList<>();
     private List<Edge> edgeList = new ArrayList<>();
     private HashMap<Integer, Node> indexHashMap = new HashMap<>();
     private HashMap<String, Node> codeMap = new HashMap<>();
 
-    private int lines;
 
     Reader(){
         readAirPorts();
@@ -64,10 +63,9 @@ public class Reader {
 
                 } else {
                     String[] line = sCurrentLine.split("\\s+");
-                    Node from = indexHashMap.get(Integer.parseInt(line[1]));
                     Node to = indexHashMap.get(Integer.parseInt(line[2]));
                     double cost = Double.parseDouble(line[3]);
-                    edgeList.add(new Edge(from, to, cost));
+                    edgeList.add(new Edge(to, cost));
                 }
             }
 
@@ -87,25 +85,8 @@ public class Reader {
     }
 
     public AdjacencyMatrixGraph createGraph() {
-        lines = nodeList.size();
-        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(lines, nodeList, edgeList, indexHashMap, codeMap);
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(nodeList, edgeList, codeMap);
         return graph;
-    }
-
-    public List getNodeList() {
-        return nodeList;
-    }
-
-    public List getEdgeList() {
-        return edgeList;
-    }
-
-    public HashMap getIndexHashMap() {
-        return indexHashMap;
-    }
-
-    public HashMap getCodeMap() {
-        return codeMap;
     }
 
 

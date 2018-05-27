@@ -1,16 +1,32 @@
-public class Entry<K, V> {
-    Entry(K k, V v){
+import java.util.Comparator;
+
+public class Entry implements Comparator<Double>{
+
+    @Override
+    public int compare(Double x, Double y){
+        if(x > y){
+            return 1;
+        }
+        else if (x < y){
+            return -1;
+        }
+        else{
+            return 0;
+        }
+    }
+
+    Entry(double k, Node v){
         key = k;
         val = v;
     }
 
-    private final K key;
-    private final V val;
+    private final double key;
+    private final Node val;
 
-    K getKey() {
+    double getKey() {
         return key;
     }
-    V getValue(){
+    Node getValue(){
         return val;
     }
 }
