@@ -4,7 +4,6 @@ public class Node implements Comparable<Node>{
     private List<Edge> adjacencies = new ArrayList<>();
     private List<Node> path = new LinkedList<>();
     private double minDistance = Double.POSITIVE_INFINITY;
-    private Node previous;
 
     public int compareTo(Node other){
         return Double.compare(minDistance,other.minDistance);
@@ -15,6 +14,14 @@ public class Node implements Comparable<Node>{
     }
     public List<Edge> getAdjacencies(){
         return adjacencies;
+    }
+    public void removeAdjacency(Node node){
+        for(int i = 0 ; i < adjacencies.size(); i++){
+            if(adjacencies.get(i).getEnd() == node){
+                adjacencies.remove(i);
+                break;
+            }
+        }
     }
 
     public List<Node> getPath() {
@@ -32,14 +39,6 @@ public class Node implements Comparable<Node>{
     }
     public double getMinDistance(){
         return minDistance;
-    }
-
-    public void setPrevious(Node previous) {
-        this.previous = previous;
-    }
-
-    public Node getPrevious(){
-        return previous;
     }
 
 

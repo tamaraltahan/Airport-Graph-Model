@@ -5,6 +5,8 @@ public class AdjacencyMatrixGraph {
     private double[][] matrix;
     private List<Node> nodeList;
     private HashMap<String, Node> codeHashMap;
+    private double total = 0;
+    private List<Edge> edgeList = new ArrayList<>();
 
 
     AdjacencyMatrixGraph(List<Node> nodes, List<Edge> edges, HashMap<String, Node> codeMap) { //takes in a list of all airports (nodes/vertices), a list of all edges, and a hashmap of <Code/Vertex>
@@ -37,10 +39,17 @@ public class AdjacencyMatrixGraph {
 
     private void addEdge(Node i, Node j, double weight) {
         matrix[i.getIndex()][j.getIndex()] = weight;
-        Edge edge = new Edge(j, weight);
-        i.addAdjacency(edge);
-        j.setPrevious(i);
+        matrix[j.getIndex()][i.getIndex()] = weight;
+        Edge edge1 = new Edge(j, weight);
+        edge1.setFrom(i);
+        Edge edge2 = new Edge(i, weight);
+        edge2.setFrom(j);
+        i.addAdjacency(edge1);
+        j.addAdjacency(edge2);
+        edgeList.add(edge1);
+        edgeList.add(edge2);
     }
+
 
     /**
      * remove flight from A to B
@@ -53,6 +62,9 @@ public class AdjacencyMatrixGraph {
             Node a = codeHashMap.get(i);
             Node b = codeHashMap.get(j);
             matrix[a.getIndex()][b.getIndex()] = 0;
+            matrix[b.getIndex()][a.getIndex()] = 0;
+            a.removeAdjacency(b);
+            b.removeAdjacency(a);
         } else {
             System.out.println("Invalid code entered");
         }
@@ -89,8 +101,12 @@ public class AdjacencyMatrixGraph {
         }
     }
 
-    //---------------------------------------Dijkstra's Quarantine Chamber-------------------------------------------
+
     public void dijkstra(Node start) {
+        for(Node n : nodeList){ //reset per use
+            n.setMinDistance(Double.POSITIVE_INFINITY);
+            n.setPath(new ArrayList<>());
+        }
 
         start.setMinDistance(0);
 
@@ -114,8 +130,6 @@ public class AdjacencyMatrixGraph {
             }
         }
     }
-//-----------------------------------------------------------------------------------------------------
-
     /**
      * Find the cheapest route from airport a to airport b utilizing Dijkstra's algorithm
      *
@@ -123,28 +137,35 @@ public class AdjacencyMatrixGraph {
      * @param b Code for airport B
      */
 
-    private void printDijkstra(String a, String b){
+    private void printDijkstra(String a, String b) {
         dijkstra(codeHashMap.get(a));
-        for(Node v:nodeList){
-            System.out.print("Vertex - "+v.getCode()+" , Dist - "+ v.getMinDistance()+" , Path - ");
+        Node nodeB = codeHashMap.get(b);
 
-            List<Node> path = v.getPath();
-            for (int i = 0; i < path.size(); i++) {
-                Node pathvert = path.get(i);
-                System.out.print(pathvert.getCode() + " ");
-            }
-            System.out.println(v.getCode());
+        Node v = nodeList.get(nodeB.getIndex());
+        total += v.getIndex();
+        System.out.print("Starting: " + a + ", Cost: $" + v.getMinDistance() + ", Path: ");
+        List<Node> path = v.getPath();
+        for (int j = 0; j < path.size(); j++) {
+            Node pathvert = path.get(j);
+            System.out.print(pathvert.getCode() + " -> ");
+        }
+        System.out.println(v.getCode());
     }
 
+
+    /**
+     * Gives the cheapest path to get from A to B using Dijkstra's algorithm
+     * @param a code for airport A
+     * @param b code for airport B
+     */
     public void cheapestRoute(String a, String b) {
         if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
             System.out.println("Airport not found");
-            return;
         } else {
-            printDijkstra(a,b);
-            }
+            printDijkstra(a, b);
         }
     }
+
 
     /**
      * Find the cheapest rout from A->B & from B->A (Double Dijkstra)
@@ -153,14 +174,10 @@ public class AdjacencyMatrixGraph {
      * @param b Code for airport B
      */
     public void cheapestRoundTrip(String a, String b) {
-        System.out.println(a + " " + b);
-        if (!codeHashMap.containsKey(a) || !codeHashMap.containsKey(b)) {
-            System.out.println("Invalid input");
-            return;
-        } else {
-            Node n1 = codeHashMap.get(a);
-            Node n2 = codeHashMap.get(b);
-        }
+        cheapestRoute(a, b);
+        cheapestRoute(b, a);
+        System.out.println("Total: " + total);
+        total = 0;//reset for next operation
     }
 
     public void allFlightsTo(Node start, Node end) {
@@ -179,7 +196,22 @@ public class AdjacencyMatrixGraph {
     }
 
     public void displayGraph() {
-        System.out.println("Soon :^)");
-    }
+        System.out.println("Matrix Data:");
+        for(int i = 0; i < matrix.length; i++){
+            for(int j = 0; j< matrix.length; j++){
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
 
+        System.out.println("\nVertices Data:\nIndex\tCode\tName");
+        for(Node n: nodeList){
+            System.out.println(n.getIndex() + "\t   " + n.getCode() + "\t   " + n.getName());
+        }
+
+        System.out.println("\nEdge Data:\nStart\tEnd\t  Weight");
+        for(Edge edge:edgeList){
+            System.out.println(edge.getStart().getCode() + "\t   " + edge.getEnd().getCode() + "\t   " + edge.getCost());
+        }
+    }
 }

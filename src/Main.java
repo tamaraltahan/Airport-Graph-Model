@@ -68,11 +68,11 @@ public class Main {
                 break;
             case '5':
                 System.out.println("Enter airport codes: ");
-                a = in.next();
-                b = in.next();
+                a = in.next().toUpperCase();
+                b = in.next().toUpperCase();
                 graph.cheapestRoundTrip(a, b);
                 break;
-            case '6':
+            case '0':
                 graph.displayGraph();
                 break;
 
