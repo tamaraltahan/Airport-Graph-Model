@@ -39,15 +39,10 @@ public class AdjacencyMatrixGraph {
 
     private void addEdge(Node i, Node j, double weight) {
         matrix[i.getIndex()][j.getIndex()] = weight;
-        matrix[j.getIndex()][i.getIndex()] = weight;
         Edge edge1 = new Edge(j, weight);
         edge1.setFrom(i);
-        Edge edge2 = new Edge(i, weight);
-        edge2.setFrom(j);
         i.addAdjacency(edge1);
-        j.addAdjacency(edge2);
         edgeList.add(edge1);
-        edgeList.add(edge2);
     }
 
 
@@ -77,14 +72,11 @@ public class AdjacencyMatrixGraph {
      * @param nodeList list of vertices
      */
     public void displayAllAirportInfo(List<Node> nodeList) {
-
         System.out.println("Airport Index:\tAirport Code:\tAirport Name:");
         for (int i = 0; i < nodeList.size(); i++) {
             Node port = nodeList.get(i);
             System.out.println(port.getIndex() + "\t" + port.getCode() + "\t" + port.getName());
-
         }
-
     }
 
     /**
